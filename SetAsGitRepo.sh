@@ -9,7 +9,7 @@ readonly GENERAL_IGNORE=".env *.log .DS_Store .vscode .idea"
 # Project-specific .gitignore templates
 declare -A PROJECT_TEMPLATES=(
     ["node"]="node_modules/ npm-debug.log* yarn-debug.log* yarn-error.log* .npm .yarn-integrity .pnpm-debug.log* dist/ build/ coverage/"
-    ["python"]="__pycache__/ *.py[cod] *\\$py.class *.so .Python build/ develop-eggs/ dist/ downloads/ eggs/ .eggs/ lib/ lib64/ parts/ sdist/ var/ wheels/ *.egg-info/ .installed.cfg *.egg .env .venv env/ venv/ ENV/ env.bak/ venv.bak/ .pytest_cache/ .coverage htmlcov/ .tox/ .cache .mypy_cache/ .dmypy.json dmypy.json"
+    ["python"]="__pycache__/ *.py[cod] *\\\$py.class *.so .Python build/ develop-eggs/ dist/ downloads/ eggs/ .eggs/ lib/ lib64/ parts/ sdist/ var/ wheels/ *.egg-info/ .installed.cfg *.egg .env .venv env/ venv/ ENV/ env.bak/ venv.bak/ .pytest_cache/ .coverage htmlcov/ .tox/ .cache .mypy_cache/ .dmypy.json dmypy.json"
     ["java"]="*.class *.jar *.war *.ear *.zip *.tar.gz *.rar target/ build/ .gradle/ gradle-app.setting !gradle-wrapper.jar .gradletasknamecache .settings/ .project .classpath bin/ tmp/ *.tmp *.bak *.swp *~.nib local.properties .loadpath .factorypath"
     ["csharp"]="bin/ obj/ *.user *.suo *.cache *.pdb *.exe *.dll *.manifest *.application *.clickonce packages/ .vs/ *.log *.vspscc *.vssscc .builds *.pidb *.svclog *.scc"
     ["go"]="*.exe *.exe~ *.dll *.so *.dylib *.test *.out go.work vendor/ .vscode/ .idea/"
