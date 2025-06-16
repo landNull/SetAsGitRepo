@@ -98,37 +98,16 @@ check_requirements() {
     fi
 }
 
-# Validate directory
-validate_directory() {
-    local dir="$1"
-    
-    if [[ ! -d "$dir" ]]; then
-        log_error "Directory '$dir' does not exist"
-        exit 1
-    fi
-    
-    if [[ -d "$dir/.git" ]]; then
-        log_error "Directory '$dir' is already a Git repository"
-        exit 1
-    fi
-    
-    # Check if directory is writable
-    if [[ ! -w "$dir" ]]; then
-        log_error "Directory '$dir' is not writable"
-        exit 1
-    fi
-}
-
-# Configure Git credential helper
+# Configure Git credential storage
 configure_git_credentials() {
     local has_secret_tool="$1"
     
     if [[ "$has_secret_tool" == "0" ]]; then
         # Try to set up libsecret if available
-        if git config --global credential.helper libsecret 2>/dev/null; then
+        if git config --global credential.helper libsecret-store 2>/dev/null; then
             log_success "Configured Git to use libsecret credential helper"
         else
-            log_warning "Could not configure libsecret credential helper"
+            log_warning "Could not configure libsecret credentials helper"
         fi
     fi
 }
@@ -139,7 +118,7 @@ detect_project_type() {
     
     # Check for various project indicators
     [[ -f "package.json" ]] && {
-        if grep -q '"react"' package.json 2>/dev/null; then
+        if grep -q '"react"' package.json/ 2>/dev/null; then
             detected_types+=("react")
         elif grep -q '"vue"' package.json 2>/dev/null; then
             detected_types+=("vue")
@@ -201,8 +180,8 @@ is_valid_gitignore_entry() {
         return 1
     fi
     
-    # Check for dangerous characters
-    if [[ "$entry" =~ [<>|] ]]; then
+    # Check for dangerous characters individually
+    if [[ "$entry" =~ [<] || "$entry" =~ [>] || "$entry" =~ [|] ]]; then
         return 1
     fi
     
