@@ -104,6 +104,27 @@ check_requirements() {
     fi
 }
 
+# Validate directory
+validate_directory() {
+    local dir="$1"
+    
+    if [[ ! -d "$dir" ]]; then
+        log_error "Directory '$dir' does not exist"
+        exit 1
+    fi
+    
+    if [[ -d "$dir/.git" ]]; then
+        log_error "Directory '$dir' is already a Git repository"
+        exit 1
+    fi
+    
+    # Check if directory is writable
+    if [[ ! -w "$dir" ]]; then
+        log_error "Directory '$dir' is not writable"
+        exit 1
+    fi
+}
+
 # Configure Git credential helper
 configure_git_credentials() {
     local has_secret_tool="$1"
@@ -509,6 +530,12 @@ main() {
     local has_secret_tool=1
     if ! check_requirements; then
         has_secret_tool=0
+    fi
+    
+    # Verify validate_directory exists
+    if ! declare -f validate_directory >/dev/null; then
+        log_error "Function validate_directory not found. Please check the script."
+        exit 1
     fi
     
     # Validate and change to target directory
