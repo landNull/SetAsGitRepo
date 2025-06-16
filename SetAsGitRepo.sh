@@ -2,7 +2,7 @@
 
 # Ensure script runs with bash
 if [[ -z "$BASH_VERSION" ]]; then
-    echo "Error: This script must be run with bash, not sh or another shell."
+    echo "Error: This script must be run with bash, not sh or another shell." >&2
     exit 1
 fi
 
@@ -37,9 +37,9 @@ readonly BLUE='\033[0;34m'
 readonly NC='\033[0m' # No Color
 
 # Logging functions
-log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
-log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
-log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
+log_info() { echo -e "${BLUE}[INFO]${NC} $1" >&2; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1" >&2; }
+log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1" >&2; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
 
 # Help function
@@ -171,20 +171,20 @@ detect_project_type() {
 
 # Display available project types
 show_project_types() {
-    echo "Available project types:"
-    echo "  node     - Node.js/JavaScript projects"
-    echo "  react    - React applications"
-    echo "  vue      - Vue.js applications" 
-    echo "  angular  - Angular applications"
-    echo "  python   - Python projects"
-    echo "  java     - Java/Maven/Gradle projects"
-    echo "  csharp   - C#/.NET projects"
-    echo "  go       - Go projects"
-    echo "  rust     - Rust projects"
-    echo "  php      - PHP projects"
-    echo "  ruby     - Ruby projects"
-    echo "  flutter  - Flutter/Dart projects"
-    echo "  unity    - Unity game engine projects"
+    echo "Available project types:" >&2
+    echo "  node     - Node.js/JavaScript projects" >&2
+    echo "  react    - React applications" >&2
+    echo "  vue      - Vue.js applications" >&2
+    echo "  angular  - Angular applications" >&2
+    echo "  python   - Python projects" >&2
+    echo "  java     - Java/Maven/Gradle projects" >&2
+    echo "  csharp   - C#/.NET projects" >&2
+    echo "  go       - Go projects" >&2
+    echo "  rust     - Rust projects" >&2
+    echo "  php      - PHP projects" >&2
+    echo "  ruby     - Ruby projects" >&2
+    echo "  flutter  - Flutter/Dart projects" >&2
+    echo "  unity    - Unity game engine projects" >&2
 }
 
 # Get .gitignore entries for project type
@@ -222,7 +222,7 @@ is_valid_gitignore_entry() {
 
 # Setup .gitignore
 setup_gitignore() {
-    echo
+    echo >&2
     log_info "Setting up .gitignore file..."
     
     if [[ ! -f ".gitignore" ]]; then
@@ -240,26 +240,26 @@ setup_gitignore() {
     local recommended_type=""
     
     if [[ ${#detected_types[@]} -gt 0 ]]; then
-        echo
+        echo >&2
         log_success "Detected project type(s): ${detected_types[*]}"
         recommended_type="${detected_types[0]}"  # Use first detected type as primary
         
         # Get entries for detected project type
         if project_entries=$(get_project_gitignore "$recommended_type"); then
             log_info "Recommended .gitignore entries for $recommended_type project:"
-            echo "$project_entries" | tr ' ' '\n' | sed 's/^/  /'
+            echo "$project_entries" | tr ' ' '\n' | sed 's/^/  /' >&2
         fi
     else
-        echo
+        echo >&2
         log_info "No specific project type detected"
         show_project_types
-        echo
+        echo >&2
         read -p "Enter project type for recommendations (or press Enter to skip): " recommended_type
         
         if [[ -n "$recommended_type" ]] && project_entries=$(get_project_gitignore "$recommended_type"); then
-            echo
+            echo >&2
             log_info "Recommended .gitignore entries for $recommended_type:"
-            echo "$project_entries" | tr ' ' '\n' | sed 's/^/  /'
+            echo "$project_entries" | tr ' ' '\n' | sed 's/^/  /' >&2
         elif [[ -n "$recommended_type" ]]; then
             log_warning "Unknown project type: $recommended_type"
             recommended_type=""
@@ -272,20 +272,20 @@ setup_gitignore() {
         proposed_entries="$proposed_entries $project_entries"
     fi
     
-    echo
+    echo >&2
     if [[ -n "$recommended_type" ]]; then
-        echo "Proposed entries (general + $recommended_type):"
+        echo "Proposed entries (general + $recommended_type):" >&2
     else
-        echo "Proposed entries (general only):"
+        echo "Proposed entries (general only):" >&2
     fi
-    echo "$proposed_entries" | tr ' ' '\n' | sed 's/^/  /'
+    echo "$proposed_entries" | tr ' ' '\n' | sed 's/^/  /' >&2
     
-    echo
-    echo "Options:"
-    echo "  [Enter] - Accept proposed entries"
-    echo "  'custom' - Enter your own entries"
-    echo "  'add' - Accept proposed + add custom entries"
-    echo "  'skip' - Skip .gitignore setup"
+    echo >&2
+    echo "Options:" >&2
+    echo "  [Enter] - Accept proposed entries" >&2
+    echo "  'custom' - Enter your own entries" >&2
+    echo "  'add' - Accept proposed + add custom entries" >&2
+    echo "  'skip' - Skip .gitignore setup" >&2
     
     local user_choice=""
     read -p "Choice: " user_choice
@@ -340,9 +340,9 @@ setup_gitignore() {
             log_success "Added ${#valid_entries[@]} entries to .gitignore"
             
             # Show final .gitignore content
-            echo
+            echo >&2
             log_info "Final .gitignore content:"
-            cat .gitignore | sed 's/^/  /'
+            cat .gitignore | sed 's/^/  /' >&2
         else
             log_warning "No valid entries to add"
         fi
@@ -421,11 +421,11 @@ prompt_credentials() {
     local username=""
     local token=""
     
-    echo
+    echo >&2
     log_info "Enter credentials for $host:"
     read -p "Username: " username
     read -s -p "Token/Password: " token
-    echo
+    echo >&2
     
     if [[ -z "$username" || -z "$token" ]]; then
         log_error "Username and token are required"
@@ -439,7 +439,7 @@ prompt_credentials() {
 prompt_branch_name() {
     local branch_name=""
     
-    echo
+    echo >&2
     log_info "Setting up initial branch..."
     read -p "Enter initial branch name (default: main): " branch_name
     
@@ -461,7 +461,7 @@ setup_remote() {
     local branch_name="$1"
     local remote_url=""
     
-    echo
+    echo >&2
     read -p "Enter remote repository URL (or press Enter to skip): " remote_url
     
     if [[ -z "$remote_url" ]]; then
@@ -583,6 +583,9 @@ main() {
     if ! branch_name=$(prompt_branch_name); then
         exit 1
     fi
+    
+    # Debug: Log the captured branch name
+    log_info "Captured branch name: '$branch_name'"
     
     # Set the branch name if it's different from current
     local current_branch
